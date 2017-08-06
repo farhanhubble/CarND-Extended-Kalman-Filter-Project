@@ -96,7 +96,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   // Replace H_ with Jacobian (Hj) of the measurement function cart2polar() evaluated at previous.
   // values of x_;
   auto Hj = jacobian();
-  auto S = H_ * P_* Hj.transpose() + R_;
+  auto S = Hj * P_* Hj.transpose() + R_;
   auto K = P_ * Hj.transpose() * S.inverse();
 
   auto I = MatrixXd::Identity(P_.rows(),P_.cols());
