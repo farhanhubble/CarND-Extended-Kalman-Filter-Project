@@ -18,10 +18,10 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
 }
 
 void KalmanFilter::Predict() {
-  /**
-  TODO:
-    * predict the state
-  */
+  /* Update state mean vector x_ and state covariance matrix P_,
+     assuming process noise 'nu' to be zero mean, Gaussian. */
+  x_ = F_ * x_ ;
+  P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
