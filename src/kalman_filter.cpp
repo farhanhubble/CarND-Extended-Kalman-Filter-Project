@@ -41,7 +41,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   /* Compute intermediates. */
-  auto y = z - x_;
+  auto y = z - Tools::cart2polar(x_);
   auto S = H_ * P_* H_.transpose() + R_;
   auto K = P_ * H_.transpose() * S.inverse();
 
