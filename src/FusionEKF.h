@@ -40,7 +40,7 @@ private:
 
   // tool object used to compute Jacobian and RMSE
   Tools tools;
-  Eigen::VactorXd x;
+  Eigen::VectorXd x;
   Eigen::MatrixXd F;
   Eigen::MatrixXd P;
   Eigen::MatrixXd Q;
