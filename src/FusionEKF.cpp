@@ -70,22 +70,19 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (!is_initialized_) {
 
     cout << "Initializing the filter..." << endl;
-    ekf_.x_ = x;
-    ekf_.x_ << 1.0, 1.0 ,1.0, 1.0;
+    x << 1.0, 1.0 ,1.0, 1.0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      auto x_state = Tools::polar2cart(measurement_pack.raw_measurements_);
-      ekf_.x_ << x_state;
+      VectorXd  x_state = Tools::polar2cart(measurement_pack.raw_measurements_);
+      x << x_state;
+      ekf_.Init(x,P,F,Hj_,R_radar_,Q);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       auto x_pos = measurement_pack.raw_measurements_;
-      ekf_.x_[0] = x_pos[0];
-      ekf_.x_[1] = x_pos[1];
+      x[0] = x_pos[0];
+      x[1] = x_pos[1];
+      ekf_.Init(x,P,F,H_laser_,R_laser_,Q);
     }
-
-    ekf_.F_ = F;
-    ekf_.P_ = P;
-    ekf_.Q_ = Q;
 
     previous_timestamp_ = measurement_pack.timestamp_;
 
@@ -127,8 +124,14 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
          0, (0.25 * delta_t_4, noise_ay), 0, (0.50* delta_t_3* noise_ay),
          (0.50 * delta_t_3 * noise_ax), 0, (delta_t_2 * noise_ax), 0,
          0, (0.50* delta_t_3* noise_ay), 0, (delta_t_2 * noise_ay);
-
-    
+         
+    if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
+      Hj_ = Tools::CalculateJacobian(x);
+      ekf_.Init(x,P,F,Hj_,R_radar_,Q);
+    }
+    else{
+      ekf_.Init(x,P,F,H_laser_,R_laser_,Q);
+    }
     ekf_.Predict();
   }
 
@@ -144,13 +147,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    */
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    ekf_.H_ = Hj_;
-    ekf_.R_ = R_radar_;
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
   } else {
-    ekf_.H_ = H_laser_;
-    ekf_.R_ = R_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);
   }
 
