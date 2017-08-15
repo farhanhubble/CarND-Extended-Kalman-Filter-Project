@@ -11,11 +11,21 @@ Tools::~Tools() {}
 
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
-  /**
-  TODO:
-    * Calculate the RMSE here.
-  */
+  int len = estimations.size();
+  VectorXd rmse  = VectorXd::Zero(estimations[0].size());
+
+  for(int i = 0; i< len; i++){
+    VectorXd error  = estimations[i] - ground_truth[i];
+    error = error.array() * error.array();
+    rmse  += error;
+  }
+
+  rmse = rmse / len;
+  rmse = rmse.array().sqrt();
+
+  return rmse;
 }
+
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
@@ -61,6 +71,9 @@ auto vy = x[3];
 auto polar = Eigen::VectorXd(3);
 
 auto rho =  sqrt(px*px+py*py);
+if(rho == 0){
+  rho = 0.000001;
+}
 auto phi =  (px == 0) ? atan(INFINITY) : atan2(py,px);
 auto rho_dot = (rho == 0) ? INFINITY :  ((px * vx + py * vy) / rho);
 
