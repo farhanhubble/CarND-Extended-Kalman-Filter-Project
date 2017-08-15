@@ -83,10 +83,15 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       ekf_.x_[1] = x_pos[1];
     }
 
+    ekf_.F_ = F;
+    ekf_.P_ = P;
+    ekf_.Q_ = Q;
+
     previous_timestamp_ = measurement_pack.timestamp_;
 
     // done initializing, no need to predict or update
     is_initialized_ = true;
+    cout << "Initialization done!" << endl;
     return;
   }
 
@@ -141,12 +146,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     ekf_.H_ = Hj_;
     ekf_.R_ = R_radar_;
-    ekf_.Update(measurement_pack.raw_measurements_);
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 
   } else {
     ekf_.H_ = H_laser_;
     ekf_.R_ = R_laser_;
-    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+    ekf_.Update(measurement_pack.raw_measurements_);
   }
 
   // print the output
