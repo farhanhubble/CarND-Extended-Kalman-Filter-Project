@@ -27,11 +27,11 @@ void KalmanFilter::Predict() {
 
 void KalmanFilter::Update(const VectorXd &z) {
   /* Compute intermediates. */
-  auto y = z - H_ * x_;
-  auto S = H_ * P_* H_.transpose() + R_;
-  auto K = P_ * H_.transpose() * S.inverse();
+  VectorXd y = z - H_ * x_;
+  MatrixXd S = H_ * P_* H_.transpose() + R_;
+  MatrixXd K = P_ * H_.transpose() * S.inverse();
   
-  auto I = MatrixXd::Identity(P_.rows(),P_.cols());
+  MatrixXd I = MatrixXd::Identity(P_.rows(),P_.cols());
 
   /* Update (correct) state means and variances. */
   x_ = x_ + K * y;
@@ -41,11 +41,12 @@ void KalmanFilter::Update(const VectorXd &z) {
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   /* Compute intermediates. */
-  auto y = z - Tools::cart2polar(x_);
-  auto S = H_ * P_* H_.transpose() + R_;
-  auto K = P_ * H_.transpose() * S.inverse();
+  VectorXd x_polar = Tools::cart2polar(x_);
+  VectorXd y = z - x_polar;
+  MatrixXd S = H_ * P_* H_.transpose() + R_;
+  MatrixXd K = P_ * H_.transpose() * S.inverse();
 
-  auto I = MatrixXd::Identity(P_.rows(),P_.cols());
+  MatrixXd I = MatrixXd::Identity(P_.rows(),P_.cols());
 
   /* Update (correct) state means and variances. */
   x_ = x_ + K * y;
