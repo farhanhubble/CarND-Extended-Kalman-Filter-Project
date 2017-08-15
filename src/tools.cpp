@@ -29,7 +29,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 
-  auto J = Eigen::MatrixXd(3,4);
+  MatrixXd J = Eigen::MatrixXd(3,4);
 
   auto px = x_state[0];
   auto py = x_state[1];
@@ -98,4 +98,13 @@ auto vy =  rho * sin(phi);
 cartesian << px , py, vx, vy;
 
 return cartesian;
+}
+
+
+void Tools::printMat(MatrixXd &m){
+  cout << "\n" << m << "\n";
+}
+
+void Tools::printVec(VectorXd &v){
+  cout << "\n" << v << "\n";
 }

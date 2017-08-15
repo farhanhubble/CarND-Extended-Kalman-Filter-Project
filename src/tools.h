@@ -41,6 +41,9 @@ public:
 
   static VectorXd  polar2cart(const VectorXd& x);
 
+  static void printMat(MatrixXd &m);
+  static void printVec(VectorXd &v);
+
 };
 
 #endif /* TOOLS_H_ */
