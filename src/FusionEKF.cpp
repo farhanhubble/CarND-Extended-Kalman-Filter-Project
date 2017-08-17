@@ -103,7 +103,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Update the process noise covariance matrix.
      * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
-  auto delta_t  = measurement_pack.timestamp_ - previous_timestamp_;
+  // Elapsed time in seconds.
+  auto delta_t  = (measurement_pack.timestamp_ - previous_timestamp_)/1000000.0;
 
   if( delta_t > 0.0){
     // Update state transition.
