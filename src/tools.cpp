@@ -36,6 +36,10 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   auto vx = x_state[2];
   auto vy = x_state[3];
 
+  if(px == 0 && py == 0){
+    px = py = 0.000001;
+  }
+
   auto p_sqrd = (px*px + py*py);
   auto p = sqrt(p_sqrd);
   auto J11 = px / p;
@@ -81,24 +85,6 @@ auto rho_dot = (px * vx + py * vy) / rho;
 polar << rho, phi, rho_dot;
 
 return polar;
-}
-
-
-VectorXd Tools::polar2cart(const VectorXd& x) {
-auto rho = x[0];
-auto phi = x[1];
-auto rho_dot = x[2];
-
-auto cartesian = Eigen::VectorXd(4);
-
-auto px =  rho * cos(phi);
-auto py =  rho * sin(phi);
-auto vx =  rho * cos(phi);
-auto vy =  rho * sin(phi);
-
-cartesian << px , py, vx, vy;
-
-return cartesian;
 }
 
 
