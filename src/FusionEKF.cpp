@@ -73,8 +73,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     x << 1.0, 1.0 ,1.0, 1.0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      VectorXd  x_state = Tools::polar2cart(measurement_pack.raw_measurements_);
-      x << x_state;
+      auto x_pos = measurement_pack.raw_measurements_;
+      x[0] = x_pos[0]*cos(x_pos[1]);
+      x[1] = x_pos[0]*sin(x_pos[1]);
       ekf_.Init(x,P,F,Hj_,R_radar_,Q);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -127,7 +128,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
          0, (0.50* delta_t_3* noise_ay), 0, (delta_t_2 * noise_ay);
          
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      Hj_ = Tools::CalculateJacobian(x);
+      Hj_ = Tools::CalculateJacobian(ekf_.x_);
       ekf_.F_ = F;
       ekf_.H_ = Hj_;
       ekf_.R_ = R_radar_;
