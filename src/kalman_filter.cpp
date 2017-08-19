@@ -43,6 +43,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /* Compute intermediates. */
   VectorXd x_polar = Tools::cart2polar(x_);
   VectorXd y = z - x_polar;
+
+  // Normalize angle component.
+  y[1] = atan2(sin(y[1]),cos(y[1]));
+
   MatrixXd S = H_ * P_* H_.transpose() + R_;
   MatrixXd K = P_ * H_.transpose() * S.inverse();
 
