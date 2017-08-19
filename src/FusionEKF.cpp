@@ -70,7 +70,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (!is_initialized_) {
 
     cout << "Initializing the filter..." << endl;
-    x << 1.0, 1.0 ,1.0, 1.0;
+    x << 1.0, 1.0 ,0.0, 0.0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       auto x_pos = measurement_pack.raw_measurements_;
@@ -123,7 +123,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     auto delta_t_4 = delta_t * delta_t_3;
     
     Q << (0.25 * delta_t_4 * noise_ax), 0, (0.50 * delta_t_3 * noise_ax), 0,
-         0, (0.25 * delta_t_4, noise_ay), 0, (0.50* delta_t_3* noise_ay),
+         0, (0.25 * delta_t_4 * noise_ay), 0, (0.50* delta_t_3* noise_ay),
          (0.50 * delta_t_3 * noise_ax), 0, (delta_t_2 * noise_ax), 0,
          0, (0.50* delta_t_3* noise_ay), 0, (delta_t_2 * noise_ay);
          
