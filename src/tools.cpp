@@ -70,12 +70,13 @@ auto vy = x[3];
 
 auto polar = Eigen::VectorXd(3);
 
-auto rho =  sqrt(px*px+py*py);
-if(rho == 0){
-  rho = 0.000001;
+if(px == 0 && py == 0){
+  px = py = 0.000001;
 }
-auto phi =  (px == 0) ? atan(INFINITY) : atan2(py,px);
-auto rho_dot = (rho == 0) ? INFINITY :  ((px * vx + py * vy) / rho);
+auto rho =  sqrt(px*px+py*py);
+
+auto phi = atan2(py,px);
+auto rho_dot = (px * vx + py * vy) / rho;
 
 polar << rho, phi, rho_dot;
 
