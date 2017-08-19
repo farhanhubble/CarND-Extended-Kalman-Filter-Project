@@ -70,7 +70,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (!is_initialized_) {
 
     cout << "Initializing the filter..." << endl;
-    x << 1.0, 1.0 ,0.0, 0.0;
+    x << 1.0, 1.0 ,1.0, 1.0;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
       auto x_pos = measurement_pack.raw_measurements_;
